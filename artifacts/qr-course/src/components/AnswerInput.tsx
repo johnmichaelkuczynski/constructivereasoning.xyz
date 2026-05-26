@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { KeystrokeTrace } from "@workspace/api-client-react";
-import { NumberPad } from "@/components/NumberPad";
-import { Calculator } from "lucide-react";
+import { MathKeyboard } from "@/components/MathKeyboard";
 
 interface AnswerInputProps {
   value: string;
@@ -12,9 +11,6 @@ interface AnswerInputProps {
 
 export function AnswerInput({ value, onChange, placeholder, disabled }: AnswerInputProps) {
   const [sessionValue, setSessionValue] = useState(value);
-  const [showNumPad, setShowNumPad] = useState<boolean>(() => {
-    return localStorage.getItem("answer-numpad-open") === "1";
-  });
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const traceRef = useRef<KeystrokeTrace>({
@@ -32,10 +28,6 @@ export function AnswerInput({ value, onChange, placeholder, disabled }: AnswerIn
   useEffect(() => {
     setSessionValue(value);
   }, [value]);
-
-  useEffect(() => {
-    localStorage.setItem("answer-numpad-open", showNumPad ? "1" : "0");
-  }, [showNumPad]);
 
   const emitChange = useCallback(
     (newVal: string) => {
@@ -83,6 +75,7 @@ export function AnswerInput({ value, onChange, placeholder, disabled }: AnswerIn
 
   const insertAtCursor = useCallback(
     (text: string) => {
+      if (!text) return;
       const ta = textareaRef.current;
       const current = sessionValue;
       let next: string;
@@ -167,25 +160,9 @@ export function AnswerInput({ value, onChange, placeholder, disabled }: AnswerIn
         disabled={disabled}
         className="w-full min-h-[120px] p-4 bg-card border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary font-mono text-sm resize-y"
       />
-      <div className="flex justify-between items-center px-1">
-        <span className="text-xs text-muted-foreground">Pasting is disabled.</span>
-        <button
-          type="button"
-          onClick={() => setShowNumPad((v) => !v)}
-          disabled={disabled}
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border transition-colors ${
-            showNumPad
-              ? "bg-primary text-primary-foreground border-primary"
-              : "bg-background hover:bg-muted border-border text-muted-foreground"
-          }`}
-          data-testid="toggle-numpad"
-        >
-          <Calculator className="w-3.5 h-3.5" />
-          {showNumPad ? "Hide number pad" : "Show number pad"}
-        </button>
-      </div>
-      {showNumPad && !disabled && (
-        <NumberPad
+      <span className="text-xs text-muted-foreground px-1">Pasting is disabled.</span>
+      {!disabled && (
+        <MathKeyboard
           onInsert={insertAtCursor}
           onBackspace={backspaceAtCursor}
           onClear={clearAll}

@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { AnswerInput } from "@/components/AnswerInput";
-import { MathKeyboard } from "@/components/MathKeyboard";
 import { ArrowLeft, CheckCircle2, XCircle, RefreshCw } from "lucide-react";
 
 function difficultyFromAccuracy(attempts: number, accuracy: number): {
@@ -230,12 +229,6 @@ export default function TopicPractice() {
               setTrace(t);
             }}
             disabled={!!grade || !problem}
-          />
-          <MathKeyboard
-            onInsert={(sym) => {
-              if (grade) return;
-              setAnswer((a) => a + sym);
-            }}
           />
         </div>
 

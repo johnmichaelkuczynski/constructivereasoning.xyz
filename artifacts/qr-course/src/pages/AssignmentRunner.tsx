@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnswerInput } from "@/components/AnswerInput";
-import { MathKeyboard } from "@/components/MathKeyboard";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 export default function AssignmentRunner() {
@@ -60,11 +59,9 @@ export default function AssignmentRunner() {
     }
   };
 
-  const handleInsertSymbol = (symbol: string) => {
+  const _handleInsertSymbol = (symbol: string) => {
     const problem = assignment?.problems[currentProblemIdx];
     if (!problem) return;
-    
-    // Simplistic insert - ideally would use selectionStart/End on textarea ref
     const currentVal = answers[problem.id] || "";
     const newVal = currentVal + symbol;
     
@@ -172,7 +169,6 @@ export default function AssignmentRunner() {
                 value={answers[currentProblem.id] || ""}
                 onChange={(val, trace) => handleAnswerChange(currentProblem.id, val, trace)}
               />
-              <MathKeyboard onInsert={handleInsertSymbol} />
             </div>
 
             <div className="flex justify-between mt-8 pt-4 border-t">

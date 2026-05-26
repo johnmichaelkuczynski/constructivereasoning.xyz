@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { Delete } from "lucide-react";
 
-const KEYBOARDS = {
+type SymbolKey = string | { label: string; insert: string; action?: "back" | "clear"; wide?: boolean; muted?: boolean };
+
+const NUMBER_PAD: SymbolKey[] = [
+  "7", "8", "9", { label: "÷", insert: "/" }, { label: "⌫", insert: "", action: "back", muted: true },
+  "4", "5", "6", { label: "×", insert: "*" }, { label: "C", insert: "", action: "clear", muted: true },
+  "1", "2", "3", { label: "−", insert: "-" }, "(",
+  "0", ".", ",", "+", ")",
+  "%", "=", { label: "space", insert: " ", wide: true },
+];
+
+const KEYBOARDS: Record<string, SymbolKey[]> = {
+  Numbers: NUMBER_PAD,
   Algebra: [
-    "x", "y", "z", "a", "b", "c", "=", "≠", "<", ">", "≤", "≥", 
+    "x", "y", "z", "a", "b", "c", "=", "≠", "<", ">", "≤", "≥",
     "+", "-", "·", "÷", "±", "√", "∛", "^2", "^3", "^n", "|x|", "!"
   ],
   Statistics: [
-    "μ", "σ", "σ²", "s", "s²", "x̄", "p̂", "P(A)", "P(A|B)", 
+    "μ", "σ", "σ²", "s", "s²", "x̄", "p̂", "P(A)", "P(A|B)",
     "∑", "∏", "E(X)", "Var(X)", "N(μ,σ²)", "z", "t", "χ²", "F"
   ],
   Calculus: [
-    "∫", "∬", "∭", "∮", "d/dx", "∂/∂x", "lim", "→", "∞", 
+    "∫", "∬", "∭", "∮", "d/dx", "∂/∂x", "lim", "→", "∞",
     "Δ", "∇", "dx", "dy", "dz", "dt", "e", "ln", "log"
   ],
   Discrete: [
@@ -19,7 +30,7 @@ const KEYBOARDS = {
     "≡", "≅", "≈", "∝", "mod", "⌊x⌋", "⌈x⌉", "gcd", "lcm"
   ],
   SetTheory: [
-    "∈", "∉", "⊂", "⊆", "⊄", "∪", "∩", "∅", "∖", "×", 
+    "∈", "∉", "⊂", "⊆", "⊄", "∪", "∩", "∅", "∖", "×",
     "A^c", "P(S)", "|S|", "ℵ₀"
   ],
   Logic: [
@@ -31,29 +42,53 @@ const KEYBOARDS = {
   ],
   Geometry: [
     "△", "∠", "⊥", "∥", "≅", "∼", "π", "r", "d", "A", "V", "C"
-  ]
+  ],
 };
 
 type KeyboardKey = keyof typeof KEYBOARDS;
 
 interface MathKeyboardProps {
   onInsert: (symbol: string) => void;
+  onBackspace?: () => void;
+  onClear?: () => void;
 }
 
-export function MathKeyboard({ onInsert }: MathKeyboardProps) {
+export function MathKeyboard({ onInsert, onBackspace, onClear }: MathKeyboardProps) {
   const [activeTabs, setActiveTabs] = useState<KeyboardKey[]>(() => {
-    const saved = localStorage.getItem("math-keyboard-tabs");
-    return saved ? JSON.parse(saved) : ["Algebra"];
+    const saved = localStorage.getItem("math-keyboard-tabs-v2");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as string[];
+        return parsed.filter((t): t is KeyboardKey => t in KEYBOARDS);
+      } catch {}
+    }
+    return ["Numbers"];
   });
 
   useEffect(() => {
-    localStorage.setItem("math-keyboard-tabs", JSON.stringify(activeTabs));
+    localStorage.setItem("math-keyboard-tabs-v2", JSON.stringify(activeTabs));
   }, [activeTabs]);
 
   const toggleTab = (tab: KeyboardKey) => {
-    setActiveTabs(prev => 
+    setActiveTabs(prev =>
       prev.includes(tab) ? prev.filter(t => t !== tab) : [...prev, tab]
     );
+  };
+
+  const handleKey = (key: SymbolKey) => {
+    if (typeof key === "string") {
+      onInsert(key);
+      return;
+    }
+    if (key.action === "back") {
+      onBackspace ? onBackspace() : onInsert("");
+      return;
+    }
+    if (key.action === "clear") {
+      onClear ? onClear() : onInsert("");
+      return;
+    }
+    onInsert(key.insert);
   };
 
   return (
@@ -62,12 +97,14 @@ export function MathKeyboard({ onInsert }: MathKeyboardProps) {
         {(Object.keys(KEYBOARDS) as KeyboardKey[]).map(tab => (
           <button
             key={tab}
+            type="button"
             onClick={() => toggleTab(tab)}
             className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-              activeTabs.includes(tab) 
-                ? "bg-primary text-primary-foreground" 
+              activeTabs.includes(tab)
+                ? "bg-primary text-primary-foreground"
                 : "bg-background text-muted-foreground hover:bg-muted border border-border"
             }`}
+            data-testid={`mathkb-tab-${tab}`}
           >
             {tab}
           </button>
@@ -75,24 +112,37 @@ export function MathKeyboard({ onInsert }: MathKeyboardProps) {
       </div>
 
       <div className="flex flex-col gap-4">
-        {activeTabs.map(tab => (
-          <div key={tab} className="flex flex-col gap-1.5">
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-1">
-              {tab}
+        {activeTabs.map(tab => {
+          const isNumbers = tab === "Numbers";
+          return (
+            <div key={tab} className="flex flex-col gap-1.5">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-1">
+                {tab}
+              </div>
+              <div className={isNumbers ? "grid grid-cols-5 gap-1.5" : "flex flex-wrap gap-1.5"}>
+                {KEYBOARDS[tab].map((key, i) => {
+                  const isObj = typeof key !== "string";
+                  const label = isObj ? key.label : key;
+                  const muted = isObj && key.muted;
+                  const wide = isObj && key.wide;
+                  return (
+                    <button
+                      key={`${tab}-${i}-${label}`}
+                      type="button"
+                      onClick={() => handleKey(key)}
+                      className={`min-w-9 h-10 px-2 rounded border shadow-sm flex items-center justify-center font-mono text-sm hover:bg-muted hover:border-primary/50 transition-all active:scale-95 ${
+                        muted ? "bg-muted/40 text-muted-foreground" : "bg-background"
+                      } ${wide ? "col-span-3 text-xs" : ""}`}
+                      data-testid={`mathkb-key-${tab}-${label}`}
+                    >
+                      {isObj && key.action === "back" ? <Delete className="w-4 h-4" /> : label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {KEYBOARDS[tab].map(symbol => (
-                <button
-                  key={`${tab}-${symbol}`}
-                  onClick={() => onInsert(symbol)}
-                  className="min-w-9 h-9 px-2 rounded bg-background border shadow-sm flex items-center justify-center font-mono text-sm hover:bg-muted hover:border-primary/50 transition-all active:scale-95"
-                >
-                  {symbol}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
         {activeTabs.length === 0 && (
           <div className="text-sm text-muted-foreground text-center py-4">
             Select a keyboard category above to show symbols.

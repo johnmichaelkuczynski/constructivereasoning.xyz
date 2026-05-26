@@ -14,7 +14,6 @@ import { useParams, Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { AnswerInput } from "@/components/AnswerInput";
-import { MathKeyboard } from "@/components/MathKeyboard";
 import { StarterQuestionCard } from "@/components/StarterQuestionCard";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageSquare, Sparkles, Send, X, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
@@ -532,12 +531,6 @@ function PracticePane({
               setTrace(t);
             }}
             disabled={!!grade || !problem}
-          />
-          <MathKeyboard
-            onInsert={(sym) => {
-              if (grade) return;
-              setAnswer((a) => a + sym);
-            }}
           />
         </div>
 
