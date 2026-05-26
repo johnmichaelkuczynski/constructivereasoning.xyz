@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { BookOpen, LayoutDashboard, Calendar, PenTool, BarChart3 } from "lucide-react";
+import { BookOpen, LayoutDashboard, Calendar, PenTool, BarChart3, Activity } from "lucide-react";
 
 export function Sidebar() {
   const [location] = useLocation();
@@ -52,11 +52,34 @@ export function Sidebar() {
   );
 }
 
+function TopBar() {
+  const [location] = useLocation();
+  const active = location.startsWith("/diagnostics");
+  return (
+    <div className="sticky top-0 z-10 flex items-center justify-end gap-2 px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
+      <Link href="/diagnostics">
+        <button
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+            active
+              ? "bg-primary text-primary-foreground"
+              : "border border-border hover:bg-secondary"
+          }`}
+          data-testid="button-diagnostic"
+        >
+          <Activity className="w-4 h-4" />
+          Diagnostic
+        </button>
+      </Link>
+    </div>
+  );
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
       <main className="flex-1 flex flex-col overflow-y-auto">
+        <TopBar />
         {children}
       </main>
     </div>
