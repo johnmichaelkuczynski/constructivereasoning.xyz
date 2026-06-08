@@ -67,12 +67,6 @@ function TopBar() {
   const [expanding, setExpanding] = useState(false);
 
   async function handleExpandLectures() {
-    if (
-      !confirm(
-        "Generate Medium and Long versions of every lecture? This runs the tutor over all 27 lectures twice (medium, then long). Takes a few minutes.",
-      )
-    )
-      return;
     setExpanding(true);
     try {
       const mRes = await fetch("/api/diagnostics/expand-lectures?level=medium", { method: "POST" });
@@ -82,24 +76,18 @@ function TopBar() {
       if (!lRes.ok) throw new Error(`Long expansion failed: HTTP ${lRes.status}`);
       const lData = (await lRes.json()) as { updated?: number; failed?: number; total?: number };
       await qc.invalidateQueries();
-      alert(
-        `Medium: ${mData.updated ?? 0}/${mData.total ?? 0} (${mData.failed ?? 0} failed)\n` +
-          `Long:   ${lData.updated ?? 0}/${lData.total ?? 0} (${lData.failed ?? 0} failed)`,
+      console.info(
+        `Lecture expansion — Medium: ${mData.updated ?? 0}/${mData.total ?? 0} (${mData.failed ?? 0} failed), ` +
+          `Long: ${lData.updated ?? 0}/${lData.total ?? 0} (${lData.failed ?? 0} failed)`,
       );
     } catch (e) {
-      alert(`Lecture rewrite failed: ${(e as Error).message}`);
+      console.error(`Lecture rewrite failed: ${(e as Error).message}`);
     } finally {
       setExpanding(false);
     }
   }
 
   async function handleReset() {
-    if (
-      !confirm(
-        "Reset the course? This deletes every assignment attempt, answer, and practice session, but keeps lectures and assignments.",
-      )
-    )
-      return;
     setResetting(true);
     try {
       const res = await fetch("/api/diagnostics/reset", { method: "POST" });
@@ -107,7 +95,7 @@ function TopBar() {
       await qc.invalidateQueries();
       setLocation("/");
     } catch (e) {
-      alert(`Reset failed: ${(e as Error).message}`);
+      console.error(`Reset failed: ${(e as Error).message}`);
     } finally {
       setResetting(false);
     }
