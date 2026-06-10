@@ -125,6 +125,21 @@ export default function ReasoningRunner() {
     return null;
   }
 
+  function handleRetake() {
+    setError(null);
+    startAttempt.mutate(
+      { assessmentId, data: { retake: true } },
+      {
+        onSuccess: () => {
+          setResult(null);
+          setAlreadyPassed(null);
+          setMcqAnswers({});
+          setDilemma({});
+        },
+      },
+    );
+  }
+
   function handleSubmit() {
     if (!assessment) return;
     const v = validate(assessment.items);
@@ -163,9 +178,18 @@ export default function ReasoningRunner() {
                 <CheckCircle2 className="w-5 h-5" /> Passed
               </span>
             </div>
-            <Link href="/reasoning">
-              <Button variant="outline" data-testid="button-back-reasoning">Back to Assessments</Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleRetake}
+                disabled={startAttempt.isPending}
+                data-testid="button-retake-reasoning"
+              >
+                {startAttempt.isPending ? "Starting…" : "Retake assessment"}
+              </Button>
+              <Link href="/reasoning">
+                <Button variant="outline" data-testid="button-back-reasoning">Back to Assessments</Button>
+              </Link>
+            </div>
           </div>
 
           {result?.headline && (

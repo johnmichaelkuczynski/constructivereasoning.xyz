@@ -579,6 +579,11 @@ export interface ReasoningResponseInput {
   ranking?: number[] | null;
 }
 
+export interface StartReasoningBody {
+  /** When true, begin a fresh attempt even if a previous attempt was already submitted. An in-progress attempt is still resumed. */
+  retake?: boolean;
+}
+
 export interface SubmitReasoningBody {
   responses: ReasoningResponseInput[];
 }

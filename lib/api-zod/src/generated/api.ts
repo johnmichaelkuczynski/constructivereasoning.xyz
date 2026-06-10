@@ -587,6 +587,10 @@ export const StartReasoningAttemptParams = zod.object({
   "assessmentId": zod.coerce.number()
 })
 
+export const StartReasoningAttemptBody = zod.object({
+  "retake": zod.boolean().optional().describe('When true, begin a fresh attempt even if a previous attempt was already submitted. An in-progress attempt is still resumed.')
+})
+
 export const StartReasoningAttemptResponse = zod.object({
   "id": zod.number(),
   "assessmentId": zod.number(),

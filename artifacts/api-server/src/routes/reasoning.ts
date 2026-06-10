@@ -13,6 +13,7 @@ import {
   ListReasoningAssessmentsResponse,
   GetReasoningAssessmentResponse,
   StartReasoningAttemptResponse,
+  StartReasoningAttemptBody,
   SubmitReasoningAttemptResponse,
   SubmitReasoningAttemptBody,
   GetGradebookResponse,
@@ -127,6 +128,13 @@ router.post("/reasoning/assessments/:assessmentId/start", async (req, res): Prom
     res.status(400).json({ error: "invalid id" });
     return;
   }
+  const parsedBody = StartReasoningAttemptBody.safeParse(req.body ?? {});
+  if (!parsedBody.success) {
+    res.status(400).json({ error: parsedBody.error.message });
+    return;
+  }
+  const retake = parsedBody.data.retake === true;
+
   const [a] = await db
     .select()
     .from(diagnosticAssessmentsTable)
@@ -136,15 +144,19 @@ router.post("/reasoning/assessments/:assessmentId/start", async (req, res): Prom
     return;
   }
 
-  // Resume an in-progress attempt, or surface the already-passed attempt.
+  // Resume an in-progress attempt if one exists (so a refresh mid-assessment
+  // never loses progress). Otherwise, on a normal open we surface the
+  // already-passed attempt for review; on a retake we fall through and start a
+  // brand-new attempt so the student can take it again.
   const existing = await db
     .select()
     .from(diagnosticAttemptsTable)
     .where(eq(diagnosticAttemptsTable.assessmentId, id))
     .orderBy(asc(diagnosticAttemptsTable.id));
-  const reusable =
-    existing.find((x) => x.status === "in_progress") ??
-    existing.find((x) => x.status === "submitted");
+  const reusable = retake
+    ? existing.find((x) => x.status === "in_progress")
+    : existing.find((x) => x.status === "in_progress") ??
+      existing.find((x) => x.status === "submitted");
   if (reusable) {
     res.json(
       StartReasoningAttemptResponse.parse({

@@ -484,6 +484,12 @@ paths:
           in: path
           required: true
           schema: { type: integer }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartReasoningBody"
       responses:
         "200":
           description: OK
@@ -1088,6 +1094,15 @@ components:
           type: ["array", "null"]
           items: { type: integer }
           description: dilemma — consideration indices ranked most-important first.
+
+    StartReasoningBody:
+      type: object
+      properties:
+        retake:
+          type: boolean
+          description: >-
+            When true, begin a fresh attempt even if a previous attempt was
+            already submitted. An in-progress attempt is still resumed.
 
     SubmitReasoningBody:
       type: object

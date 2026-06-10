@@ -50,6 +50,7 @@ import type {
   ReasoningAssessmentSummary,
   ReasoningAttemptState,
   ReasoningResult,
+  StartReasoningBody,
   SubmitAttemptInput,
   SubmitReasoningBody,
   Topic,
@@ -1937,14 +1938,16 @@ export const getStartReasoningAttemptUrl = (assessmentId: number,) => {
 /**
  * @summary Start (or resume) an attempt on a diagnostic assessment
  */
-export const startReasoningAttempt = async (assessmentId: number, options?: RequestInit): Promise<ReasoningAttemptState> => {
+export const startReasoningAttempt = async (assessmentId: number,
+    startReasoningBody?: StartReasoningBody, options?: RequestInit): Promise<ReasoningAttemptState> => {
 
   return customFetch<ReasoningAttemptState>(getStartReasoningAttemptUrl(assessmentId),
   {
     ...options,
-    method: 'POST'
-
-
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      startReasoningBody,)
   }
 );}
 
@@ -1952,8 +1955,8 @@ export const startReasoningAttempt = async (assessmentId: number, options?: Requ
 
 
 export const getStartReasoningAttemptMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startReasoningAttempt>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof startReasoningAttempt>>, TError,{assessmentId: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startReasoningAttempt>>, TError,{assessmentId: number;data?: BodyType<StartReasoningBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof startReasoningAttempt>>, TError,{assessmentId: number;data?: BodyType<StartReasoningBody>}, TContext> => {
 
 const mutationKey = ['startReasoningAttempt'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1965,10 +1968,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startReasoningAttempt>>, {assessmentId: number}> = (props) => {
-          const {assessmentId} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startReasoningAttempt>>, {assessmentId: number;data?: BodyType<StartReasoningBody>}> = (props) => {
+          const {assessmentId,data} = props ?? {};
 
-          return  startReasoningAttempt(assessmentId,requestOptions)
+          return  startReasoningAttempt(assessmentId,data,requestOptions)
         }
 
 
@@ -1979,18 +1982,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type StartReasoningAttemptMutationResult = NonNullable<Awaited<ReturnType<typeof startReasoningAttempt>>>
-
+    export type StartReasoningAttemptMutationBody = BodyType<StartReasoningBody> | undefined
     export type StartReasoningAttemptMutationError = ErrorType<unknown>
 
     /**
  * @summary Start (or resume) an attempt on a diagnostic assessment
  */
 export const useStartReasoningAttempt = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startReasoningAttempt>>, TError,{assessmentId: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startReasoningAttempt>>, TError,{assessmentId: number;data?: BodyType<StartReasoningBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof startReasoningAttempt>>,
         TError,
-        {assessmentId: number},
+        {assessmentId: number;data?: BodyType<StartReasoningBody>},
         TContext
       > => {
       return useMutation(getStartReasoningAttemptMutationOptions(options));

@@ -69,6 +69,7 @@ export * from './reasoningMetric';
 export * from './reasoningResponseInput';
 export * from './reasoningResult';
 export * from './savedAnswer';
+export * from './startReasoningBody';
 export * from './submitAttemptInput';
 export * from './submitReasoningBody';
 export * from './topic';
