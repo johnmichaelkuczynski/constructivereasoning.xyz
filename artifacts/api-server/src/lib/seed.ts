@@ -117,142 +117,27 @@ const ASSIGNMENTS: SeedAssignment[] = SECTIONS.map((s, i) => {
   };
 });
 
-type SeedPrimer = SeedTopic;
-
-const REASONING_PRIMERS: SeedPrimer[] = [
-  {
-    slug: "reasoning-primer-subject",
-    title: "What the AI Knowledge check looks for",
-    weekNumber: 1,
-    blurb:
-      "Practice primer: applying what you know about how AI actually works.",
-    lectureTitle: "Primer: What the AI Knowledge check looks for",
-    body: `# What the AI Knowledge check looks for
-
-This short primer prepares you for the **AI Knowledge** check. It's practice only — it never affects your grade, you can retake it as often as you like, and you'll get fresh questions every time.
-
-## It tests understanding, not memorizing
-
-The questions don't ask you to recite a definition. Each one gives a short, everyday situation and asks you to *apply* what you understand about how AI works — for example, what a chatbot is really doing when it answers, or why a tool trained on narrow data struggles outside it.
-
-## The big ideas it draws on
-
-The check spans the whole course:
-
-- **What AI is (and isn't)** — a pattern-finder, not a mind that understands.
-- **Rules vs. learning** — fixed rules a person wrote versus patterns learned from examples.
-- **Data and training** — a model is only as good as the examples it learned from.
-- **Pattern recognition and neural networks** — how systems build up complex patterns from simpler ones.
-- **Language models** — predicting likely next words rather than looking up verified facts.
-- **Strengths, limits, and hallucination** — why confident wording isn't the same as being correct.
-- **Using AI well** — giving clear context, checking results, and being honest about its use.
-
-## How to do well
-
-1. Read the little scenario and ask what's *actually* happening underneath.
-2. Choose the option that fits how AI really works — not the one that sounds most impressive.
-3. For written questions, a clear sentence or two that captures the core idea is plenty. You're never judged on length.`,
-  },
-  {
-    slug: "reasoning-primer-reasoning",
-    title: "Core clear-thinking skills",
-    weekNumber: 1,
-    blurb:
-      "Practice primer: analysis, inference, evaluation, deduction, and induction.",
-    lectureTitle: "Primer: Core clear-thinking skills",
-    body: `# Core clear-thinking skills
-
-This short primer prepares you for the **General Reasoning** check — questions that exercise five everyday thinking skills. It's practice only: it never affects your grade, you can retake it any time, and the questions are different each time. These are the same skills you use to decide what a set of facts really shows, so they matter directly for thinking clearly about what AI can and can't actually do.
-
-## The five skills
-
-- **Analysis** — break an argument into parts: find its **point** (the conclusion), the **reasons** given for it, and any hidden assumption it leans on. Ask: "What is this trying to convince me of, and what does it take for granted?"
-- **Inference** — work out what *follows* from what you're told, and how strongly. Tell apart what *must* be true, what is *likely*, and what is only *possible*.
-- **Evaluation** — judge how much the reasons actually support the point. Notice when evidence is beside the point, a source isn't trustworthy, or a step doesn't really connect.
-- **Deduction** — reasoning where true starting facts *guarantee* the conclusion. If the starting facts are true, the conclusion can't be false. Watch for sneaky forms that only *look* airtight.
-- **Induction** — reasoning from a few examples to a *probable* general rule or prediction. Strong induction uses many fair examples; weak induction over-generalizes from too few.
-
-## A recurring trap: things that move together
-
-Many tempting answers *sound* reasonable but are **not actually backed up by what you were told**. The discipline these questions reward is the same one careful thinking about technology demands: keep apart what the facts **show**, what you're **assuming**, and what only *sounds* right. Two things happening together does not prove one causes the other.
-
-## How to do well
-
-1. Find the **point** (conclusion) first, then the reasons.
-2. Ask which of the five skills the question is testing (a hidden-assumption question is analysis; a "what follows" question is inference or deduction; a "how good is this reasoning" question is evaluation).
-3. Pick the option that follows **only** from what you were given — not the one that merely sounds true or appealing.`,
-  },
-];
-
-const DESIRED_PRIMER_SLUGS = new Set(REASONING_PRIMERS.map((p) => p.slug));
-
-// All primer slugs this app has ever used. Any of these NOT in the current
-// desired set is obsolete and is removed (its lecture cascades away with it),
-// so a database seeded under an older design self-heals.
-const ALL_PRIMER_SLUGS = [
+// Any primer / practice-prep lecture from earlier (pre-CCR) designs is obsolete.
+// The course now uses the eight CCR sections for content and a separate
+// phase-based diagnostic for assessment, so these stray topics are removed on
+// every boot to self-heal databases seeded under an older design.
+const LEGACY_PRIMER_SLUGS = [
   "reasoning-primer-subject",
   "reasoning-primer-reasoning",
   "reasoning-primer-ethical",
   "reasoning-primer-critical",
 ];
 
-// Reconcile the assessment primer lectures to the current desired set: drop any
-// obsolete primers, then insert or update the desired ones. Safe to run on
-// every boot.
 export async function seedReasoningPrimersIfMissing(): Promise<void> {
-  // 1. Remove obsolete primers (deleting the topic cascades to its lecture).
-  const obsolete = ALL_PRIMER_SLUGS.filter((s) => !DESIRED_PRIMER_SLUGS.has(s));
   let removed = 0;
-  for (const slug of obsolete) {
+  for (const slug of LEGACY_PRIMER_SLUGS) {
     const rows = await db
       .delete(topicsTable)
       .where(eq(topicsTable.slug, slug))
       .returning({ id: topicsTable.id });
     removed += rows.length;
   }
-
-  // 2. Upsert the desired primers.
-  let added = 0;
-  let updated = 0;
-  for (let i = 0; i < REASONING_PRIMERS.length; i++) {
-    const t = REASONING_PRIMERS[i]!;
-    const existing = await db
-      .select({ id: topicsTable.id })
-      .from(topicsTable)
-      .where(eq(topicsTable.slug, t.slug));
-    const found = existing[0];
-    if (found) {
-      await db
-        .update(topicsTable)
-        .set({ title: t.title, weekNumber: t.weekNumber, blurb: t.blurb })
-        .where(eq(topicsTable.id, found.id));
-      await db
-        .update(lecturesTable)
-        .set({ title: t.lectureTitle, body: t.body, weekNumber: t.weekNumber })
-        .where(eq(lecturesTable.topicId, found.id));
-      updated += 1;
-      continue;
-    }
-    const [inserted] = await db
-      .insert(topicsTable)
-      .values({
-        slug: t.slug,
-        title: t.title,
-        weekNumber: t.weekNumber,
-        blurb: t.blurb,
-        position: 900 + i,
-      })
-      .returning();
-    if (!inserted) throw new Error(`Failed to insert primer ${t.slug}`);
-    await db.insert(lecturesTable).values({
-      topicId: inserted.id,
-      weekNumber: t.weekNumber,
-      title: t.lectureTitle,
-      body: t.body,
-    });
-    added += 1;
-  }
-  logger.info({ added, updated, removed }, "Reasoning primers reconciled");
+  if (removed > 0) logger.info({ removed }, "Legacy reasoning primers removed");
 }
 
 export async function seedIfEmpty(): Promise<void> {

@@ -13,8 +13,8 @@ import type {
   ReasoningResult,
   ReasoningReviewItem,
   ReasoningMetric,
-  StartReasoningBodyFormat,
-  StartReasoningBodyLength,
+  StartReasoningInputFormat,
+  StartReasoningInputLength,
 } from "@workspace/api-client-react";
 import { AnswerInput } from "@/components/AnswerInput";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle2, AlertCircle, XCircle, ListChecks, PenLine, SplitSquareHorizontal, Gauge, Layers, Mountain } from "lucide-react";
 
 type FormatOption = {
-  value: StartReasoningBodyFormat;
+  value: StartReasoningInputFormat;
   title: string;
   description: string;
   Icon: typeof ListChecks;
@@ -54,7 +54,7 @@ function formatOptions(_instrument: string): FormatOption[] {
 }
 
 type LengthOption = {
-  value: StartReasoningBodyLength;
+  value: StartReasoningInputLength;
   title: string;
   description: string;
   Icon: typeof Gauge;
@@ -106,7 +106,7 @@ export default function ReasoningRunner() {
   // Two-step picker before starting/restarting an attempt: first the answer
   // format, then how many questions (length). null = no picker shown.
   const [pickerStep, setPickerStep] = useState<"format" | "length" | null>(null);
-  const [pendingFormat, setPendingFormat] = useState<StartReasoningBodyFormat | null>(null);
+  const [pendingFormat, setPendingFormat] = useState<StartReasoningInputFormat | null>(null);
   const decidedRef = useRef(false);
   const retakeRef = useRef(false);
 
@@ -151,14 +151,14 @@ export default function ReasoningRunner() {
   }, [list, assessmentId]);
 
   // Step 1: remember the chosen format, then ask for the length.
-  function pickFormat(format: StartReasoningBodyFormat) {
+  function pickFormat(format: StartReasoningInputFormat) {
     setPendingFormat(format);
     setPickerStep("length");
   }
 
   // Step 2: with both format and length chosen, start the attempt. The picker
   // stays visible until the attempt is created so a failure can recover.
-  function pickLength(length: StartReasoningBodyLength) {
+  function pickLength(length: StartReasoningInputLength) {
     if (!pendingFormat) return;
     const format = pendingFormat;
     setError(null);

@@ -841,10 +841,10 @@ export interface RewriteLectureInput {
 /**
  * The answer format the student picked for this attempt. "mcq" = multiple choice only (no typing); "hybrid" = mostly multiple choice plus 1-2 one-sentence written answers; "written" = short open answers only. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "mcq".
  */
-export type StartReasoningBodyFormat = typeof StartReasoningBodyFormat[keyof typeof StartReasoningBodyFormat];
+export type StartReasoningInputFormat = typeof StartReasoningInputFormat[keyof typeof StartReasoningInputFormat];
 
 
-export const StartReasoningBodyFormat = {
+export const StartReasoningInputFormat = {
   mcq: 'mcq',
   hybrid: 'hybrid',
   written: 'written',
@@ -853,25 +853,25 @@ export const StartReasoningBodyFormat = {
 /**
  * How many questions the attempt should contain. "short" = a few questions, "medium" = a moderate number, "long" = many questions. Independent of format. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "medium".
  */
-export type StartReasoningBodyLength = typeof StartReasoningBodyLength[keyof typeof StartReasoningBodyLength];
+export type StartReasoningInputLength = typeof StartReasoningInputLength[keyof typeof StartReasoningInputLength];
 
 
-export const StartReasoningBodyLength = {
+export const StartReasoningInputLength = {
   short: 'short',
   medium: 'medium',
   long: 'long',
 } as const;
 
-export interface StartReasoningBody {
+export interface StartReasoningInput {
   /** When true, begin a fresh attempt even if a previous attempt was already submitted. An in-progress attempt is still resumed. */
   retake?: boolean;
   /** The answer format the student picked for this attempt. "mcq" = multiple choice only (no typing); "hybrid" = mostly multiple choice plus 1-2 one-sentence written answers; "written" = short open answers only. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "mcq". */
-  format?: StartReasoningBodyFormat;
+  format?: StartReasoningInputFormat;
   /** How many questions the attempt should contain. "short" = a few questions, "medium" = a moderate number, "long" = many questions. Independent of format. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "medium". */
-  length?: StartReasoningBodyLength;
+  length?: StartReasoningInputLength;
 }
 
-export interface SubmitReasoningBody {
+export interface SubmitReasoningInput {
   responses: ReasoningResponseInput[];
 }
 

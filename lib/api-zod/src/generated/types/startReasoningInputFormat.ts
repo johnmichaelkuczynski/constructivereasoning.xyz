@@ -9,10 +9,10 @@
 /**
  * The answer format the student picked for this attempt. "mcq" = multiple choice only (no typing); "hybrid" = mostly multiple choice plus 1-2 one-sentence written answers; "written" = short open answers only. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "mcq".
  */
-export type StartReasoningBodyFormat = typeof StartReasoningBodyFormat[keyof typeof StartReasoningBodyFormat];
+export type StartReasoningInputFormat = typeof StartReasoningInputFormat[keyof typeof StartReasoningInputFormat];
 
 
-export const StartReasoningBodyFormat = {
+export const StartReasoningInputFormat = {
   mcq: 'mcq',
   hybrid: 'hybrid',
   written: 'written',

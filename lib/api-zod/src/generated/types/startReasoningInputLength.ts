@@ -9,10 +9,10 @@
 /**
  * How many questions the attempt should contain. "short" = a few questions, "medium" = a moderate number, "long" = many questions. Independent of format. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "medium".
  */
-export type StartReasoningBodyLength = typeof StartReasoningBodyLength[keyof typeof StartReasoningBodyLength];
+export type StartReasoningInputLength = typeof StartReasoningInputLength[keyof typeof StartReasoningInputLength];
 
 
-export const StartReasoningBodyLength = {
+export const StartReasoningInputLength = {
   short: 'short',
   medium: 'medium',
   long: 'long',

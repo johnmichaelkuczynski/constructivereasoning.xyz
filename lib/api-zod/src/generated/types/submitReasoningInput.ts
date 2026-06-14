@@ -7,6 +7,6 @@
  */
 import type { ReasoningResponseInput } from './reasoningResponseInput';
 
-export interface SubmitReasoningBody {
+export interface SubmitReasoningInput {
   responses: ReasoningResponseInput[];
 }

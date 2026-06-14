@@ -458,10 +458,14 @@ router.get("/reasoning/grades", async (_req, res) => {
         .where(eq(attemptsTable.assignmentId, a.id));
       const submitted = attempts.filter((x) => x.status === "submitted");
       const inProgress = attempts.some((x) => x.status === "in_progress");
-      const best = submitted.reduce(
-        (b, x) => (x.scorePercent != null && x.scorePercent > b ? x.scorePercent : b),
-        -1,
+      const bestAttempt = submitted.reduce<typeof submitted[number] | null>(
+        (b, x) =>
+          x.scorePercent != null && (b == null || b.scorePercent == null || x.scorePercent > b.scorePercent)
+            ? x
+            : b,
+        null,
       );
+      const best = bestAttempt?.scorePercent ?? -1;
       const status: "not_started" | "in_progress" | "submitted" =
         submitted.length > 0 ? "submitted" : inProgress ? "in_progress" : "not_started";
       return {
@@ -471,13 +475,42 @@ router.get("/reasoning/grades", async (_req, res) => {
         weekNumber: a.weekNumber,
         status,
         bestScore: best < 0 ? null : best,
+        bestFormat: bestAttempt?.format ?? null,
       };
     }),
   );
-  const courseworkAvg =
-    coursework.length === 0
-      ? 0
-      : coursework.reduce((s, c) => s + (c.bestScore ?? 0), 0) / coursework.length;
+  // The course aggregate honors configurable per-format point values: each
+  // section's homework counts toward the overall grade in proportion to the
+  // weight of the answer format the student chose (mcq | hybrid | written).
+  // Unsubmitted sections still count against the total at a neutral weight (the
+  // mean of the three configured format weights) so skipping a section can't
+  // raise the average.
+  const aggSettings = await getCourseSettings();
+  const weightForFormat = (format: string | null): number => {
+    switch (format) {
+      case "mcq":
+        return aggSettings.formatWeightMcq;
+      case "hybrid":
+        return aggSettings.formatWeightHybrid;
+      case "written":
+        return aggSettings.formatWeightWritten;
+      default:
+        return (
+          (aggSettings.formatWeightMcq +
+            aggSettings.formatWeightHybrid +
+            aggSettings.formatWeightWritten) /
+          3
+        );
+    }
+  };
+  const weightedTotals = coursework.reduce(
+    (acc, c) => {
+      const w = weightForFormat(c.bestFormat);
+      return { num: acc.num + (c.bestScore ?? 0) * w, den: acc.den + w };
+    },
+    { num: 0, den: 0 },
+  );
+  const courseworkAvg = weightedTotals.den === 0 ? 0 : weightedTotals.num / weightedTotals.den;
 
   // ---- Diagnostics (practice only — NOT graded) ----
   // Surfaced for display so students can see what they've completed, but they

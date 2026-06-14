@@ -5,14 +5,14 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { StartReasoningBodyFormat } from './startReasoningBodyFormat';
-import type { StartReasoningBodyLength } from './startReasoningBodyLength';
+import type { StartReasoningInputFormat } from './startReasoningInputFormat';
+import type { StartReasoningInputLength } from './startReasoningInputLength';
 
-export interface StartReasoningBody {
+export interface StartReasoningInput {
   /** When true, begin a fresh attempt even if a previous attempt was already submitted. An in-progress attempt is still resumed. */
   retake?: boolean;
   /** The answer format the student picked for this attempt. "mcq" = multiple choice only (no typing); "hybrid" = mostly multiple choice plus 1-2 one-sentence written answers; "written" = short open answers only. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "mcq". */
-  format?: StartReasoningBodyFormat;
+  format?: StartReasoningInputFormat;
   /** How many questions the attempt should contain. "short" = a few questions, "medium" = a moderate number, "long" = many questions. Independent of format. Applied only when creating a new attempt; ignored when resuming or reviewing. Defaults to "medium". */
-  length?: StartReasoningBodyLength;
+  length?: StartReasoningInputLength;
 }

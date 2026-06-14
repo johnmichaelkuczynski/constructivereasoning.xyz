@@ -592,7 +592,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/StartReasoningBody"
+              $ref: "#/components/schemas/StartReasoningInput"
       responses:
         "200":
           description: OK
@@ -616,7 +616,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SubmitReasoningBody"
+              $ref: "#/components/schemas/SubmitReasoningInput"
       responses:
         "200":
           description: OK
@@ -1320,7 +1320,7 @@ components:
           enum: [short, medium, long, custom]
           description: Which version of the lecture to rewrite from. Defaults to "short". Use "custom" to refine an existing rewrite further.
 
-    StartReasoningBody:
+    StartReasoningInput:
       type: object
       properties:
         retake:
@@ -1346,7 +1346,7 @@ components:
             Independent of format. Applied only when creating a new attempt;
             ignored when resuming or reviewing. Defaults to "medium".
 
-    SubmitReasoningBody:
+    SubmitReasoningInput:
       type: object
       required: [responses]
       properties:
