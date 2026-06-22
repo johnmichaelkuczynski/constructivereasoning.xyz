@@ -22,9 +22,24 @@ const router: IRouter = Router();
 
 const WEEK_TITLES: Record<number, { title: string; summary: string }> = {
   1: {
-    title: "Constructive Critical Reasoning",
+    title: "Foundations of Constructive Reasoning",
     summary:
       "How to draw the strongest, most falsifiable conclusion the evidence actually supports — finding fecund leads, choosing models by explanatory yield, committing to cheap decisive tests, and staying boldly calibrated instead of dodging behind 'we can't really know.'",
+  },
+  2: {
+    title: "Building and Stress-Testing the Model",
+    summary:
+      "Turn a lead into a structured, testable model: pose the generative question, surface the auxiliary assumptions it leans on, isolate the load-bearing claims, demand severe tests, weight confirmations by surprise and independence, and tell a model earning new predictions from one kept alive by ad hoc patches.",
+  },
+  3: {
+    title: "Adjudicating Among Rivals",
+    summary:
+      "Decide between competing explanations the disciplined way — frame the live contrast set, let the rivals carve out discriminating and crucial tests, weigh which hypothesis made the data more expected, fold in base rates, spot when one cause screens off another, act under genuine underdetermination, and judge against the total evidence rather than a flattering slice.",
+  },
+  4: {
+    title: "Commitment, Revision, and Decision",
+    summary:
+      "Convert a vetted model into action: scale commitment to the cost of being wrong, accept provisionally with an explicit drop-trigger, make the update that hurts when evidence demands it, diagnose which assumption broke, audit yourself for motivated reasoning, prize robustness, know when to stop, and synthesize the surviving models into one standing explanation.",
   },
 };
 
@@ -110,7 +125,7 @@ async function buildWeek(weekNumber: number) {
 }
 
 router.get("/course/overview", async (_req, res) => {
-  const weeks = await Promise.all([1].map(buildWeek));
+  const weeks = await Promise.all([1, 2, 3, 4].map(buildWeek));
   const assignmentsTotal = weeks.reduce((s, w) => s + w.assignments.length, 0);
   const assignmentsCompleted = weeks.reduce(
     (s, w) => s + w.assignments.filter((a) => a.status === "submitted").length,
@@ -136,7 +151,7 @@ router.get("/course/weeks/:weekNumber", async (req, res): Promise<void> => {
     ? req.params.weekNumber[0]
     : req.params.weekNumber;
   const weekNumber = parseInt(raw ?? "", 10);
-  if (!Number.isFinite(weekNumber) || weekNumber < 1 || weekNumber > 1) {
+  if (!Number.isFinite(weekNumber) || weekNumber < 1 || weekNumber > 4) {
     res.status(400).json({ error: "invalid weekNumber" });
     return;
   }

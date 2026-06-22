@@ -37,20 +37,68 @@ const features = [
   },
   {
     icon: BarChart3,
-    title: "One Unit, 8 Sections",
-    body: "From spotting a fecund lead all the way to calibrated boldness under uncertainty.",
+    title: "Four Units, 32 Sections",
+    body: "From spotting a fecund lead all the way to synthesizing vetted models into a standing explanation.",
   },
 ];
 
-const topics = [
-  { n: "1.1", title: "The Fecund Lead" },
-  { n: "1.2", title: "Model Selection by Explanatory Yield" },
-  { n: "1.3", title: "Parsimony as a Live Constraint" },
-  { n: "1.4", title: "Abductive Commitment" },
-  { n: "1.5", title: "From Correlation to Mechanism" },
-  { n: "1.6", title: "The Anomaly Cluster" },
-  { n: "1.7", title: "The Cheap Decisive Test" },
-  { n: "1.8", title: "Calibrated Boldness" },
+const units = [
+  {
+    n: 1,
+    title: "Foundations of Constructive Reasoning",
+    topics: [
+      { n: "1.1", title: "The Fecund Lead" },
+      { n: "1.2", title: "Model Selection by Explanatory Yield" },
+      { n: "1.3", title: "Parsimony as a Live Constraint" },
+      { n: "1.4", title: "Abductive Commitment" },
+      { n: "1.5", title: "From Correlation to Mechanism" },
+      { n: "1.6", title: "The Anomaly Cluster" },
+      { n: "1.7", title: "The Cheap Decisive Test" },
+      { n: "1.8", title: "Calibrated Boldness" },
+    ],
+  },
+  {
+    n: 2,
+    title: "Building and Stress-Testing the Model",
+    topics: [
+      { n: "2.1", title: "The Generative Question" },
+      { n: "2.2", title: "Auxiliary Assumptions" },
+      { n: "2.3", title: "Load-Bearing vs. Decorative" },
+      { n: "2.4", title: "The Severe Test" },
+      { n: "2.5", title: "Surprise as a Metric" },
+      { n: "2.6", title: "Independent Lines of Support" },
+      { n: "2.7", title: "The Degenerating Model" },
+      { n: "2.8", title: "Productive vs. Hollow Complexity" },
+    ],
+  },
+  {
+    n: 3,
+    title: "Adjudicating Among Rivals",
+    topics: [
+      { n: "3.1", title: "The Live Contrast Set" },
+      { n: "3.2", title: "Differential Diagnosis" },
+      { n: "3.3", title: "The Crucial Experiment" },
+      { n: "3.4", title: "Likelihood Reasoning" },
+      { n: "3.5", title: "Base Rates and Priors" },
+      { n: "3.6", title: "Screening Off" },
+      { n: "3.7", title: "The Underdetermination Trap" },
+      { n: "3.8", title: "Total Evidence" },
+    ],
+  },
+  {
+    n: 4,
+    title: "Commitment, Revision, and Decision",
+    topics: [
+      { n: "4.1", title: "The Cost of Being Wrong" },
+      { n: "4.2", title: "Provisional Acceptance" },
+      { n: "4.3", title: "The Update That Hurts" },
+      { n: "4.4", title: "Diagnosing the Failure" },
+      { n: "4.5", title: "The Reasoner's Self-Audit" },
+      { n: "4.6", title: "Robustness Under Perturbation" },
+      { n: "4.7", title: "Knowing When to Stop" },
+      { n: "4.8", title: "The Constructive Synthesis" },
+    ],
+  },
 ];
 
 export default function Landing() {
@@ -89,7 +137,7 @@ export default function Landing() {
         <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-medium mb-6">
             <BarChart3 className="w-3.5 h-3.5" />
-            A one-unit course in constructive critical reasoning
+            A four-unit course in constructive critical reasoning
           </div>
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary leading-tight mb-5">
             Don't just doubt. Commit to the strongest conclusion.
@@ -140,20 +188,32 @@ export default function Landing() {
           <h2 className="text-center font-serif font-semibold text-xl mb-6">
             The Curriculum
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {topics.map((t) => (
-              <div
-                key={t.n}
-                className="flex items-center gap-4 rounded-lg border border-border bg-card p-5"
-              >
-                <div className="w-10 h-10 shrink-0 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-serif font-bold text-sm">
-                  {t.n}
+          <div className="flex flex-col gap-10">
+            {units.map((u) => (
+              <div key={u.n}>
+                <div className="mb-4 flex items-baseline gap-3">
+                  <span className="text-xs uppercase tracking-wider text-muted-foreground">
+                    Unit {u.n}
+                  </span>
+                  <h3 className="font-serif font-semibold text-lg">{u.title}</h3>
                 </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                    Topic {t.n}
-                  </div>
-                  <div className="font-medium">{t.title}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {u.topics.map((t) => (
+                    <div
+                      key={t.n}
+                      className="flex items-center gap-4 rounded-lg border border-border bg-card p-5"
+                    >
+                      <div className="w-10 h-10 shrink-0 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-serif font-bold text-sm">
+                        {t.n}
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                          Section {t.n}
+                        </div>
+                        <div className="font-medium">{t.title}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}

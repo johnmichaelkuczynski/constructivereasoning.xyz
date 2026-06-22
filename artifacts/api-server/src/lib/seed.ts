@@ -15,7 +15,7 @@ import { SECTIONS, type HomeworkItem } from "./homeworkContent";
 // the value stored in seed_meta; a mismatch forces a full re-seed, so content
 // edits self-heal in every environment (including a republished production)
 // without a manual database wipe.
-const SEED_CONTENT_VERSION = "2026-06-14-ccr-v1";
+const SEED_CONTENT_VERSION = "2026-06-22-ccr-4unit-v1";
 
 // First CCR section slug — used as the marker topic that signals the current
 // curriculum is seeded. A database holding the prior curriculum will lack this
@@ -31,7 +31,7 @@ type SeedTopic = {
   body: string;
 };
 
-// The eight Constructive Critical Reasoning sections become the course topics.
+// The 32 Constructive Critical Reasoning sections become the course topics.
 // Each section's lecture is the short-depth body; medium/long are generated on
 // demand by the lecture route.
 const TOPICS: SeedTopic[] = SECTIONS.map((s) => ({
@@ -118,7 +118,7 @@ const ASSIGNMENTS: SeedAssignment[] = SECTIONS.map((s, i) => {
 });
 
 // Any primer / practice-prep lecture from earlier (pre-CCR) designs is obsolete.
-// The course now uses the eight CCR sections for content and a separate
+// The course now uses the 32 CCR sections for content and a separate
 // phase-based diagnostic for assessment, so these stray topics are removed on
 // every boot to self-heal databases seeded under an older design.
 const LEGACY_PRIMER_SLUGS = [

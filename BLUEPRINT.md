@@ -1,12 +1,12 @@
 # Constructive Critical Reasoning — App Blueprint
 
-A complete architectural blueprint for the Constructive Critical Reasoning (CCR) one-unit course. This document is the single reference for what the app does, how it's wired, and the contracts between pieces. For day-to-day commands and gotchas see `replit.md`.
+A complete architectural blueprint for the Constructive Critical Reasoning (CCR) four-unit course. This document is the single reference for what the app does, how it's wired, and the contracts between pieces. For day-to-day commands and gotchas see `replit.md`.
 
 ---
 
 ## 1. Product summary
 
-Constructive Critical Reasoning (CCR) is a self-paced, single-user web course that trains students to commit to the **richest, most-falsifiable conclusion a body of evidence supports** (one unit, 8 sections — from The Fecund Lead through Calibrated Boldness). Students read AI-rewritten lecture notes at three lengths, ask an AI tutor scoped to the section they're reading, drill on adaptive scenario practice, and submit **one homework per section** that is AI-graded on an **inverted partial-credit scale** and AI-detection-screened. Grading is the inverted core: the most-committed, most-testable model earns top credit; the cautious "you can't conclude anything" dodge earns near-zero. There is **no separate test, midterm, or final** — homework is the graded model.
+Constructive Critical Reasoning (CCR) is a self-paced, single-user web course that trains students to commit to the **richest, most-falsifiable conclusion a body of evidence supports** (four units, 32 sections — from The Fecund Lead through The Constructive Synthesis). Students read AI-rewritten lecture notes at three lengths, ask an AI tutor scoped to the section they're reading, drill on adaptive scenario practice, and submit **one homework per section** that is AI-graded on an **inverted partial-credit scale** and AI-detection-screened. Grading is the inverted core: the most-committed, most-testable model earns top credit; the cautious "you can't conclude anything" dodge earns near-zero. There is **no separate test, midterm, or final** — homework is the graded model.
 
 The product surface is two deployable artifacts in one pnpm monorepo:
 

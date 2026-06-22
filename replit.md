@@ -1,6 +1,6 @@
 # 🧭 Constructive Critical Reasoning
 
-**A One-Unit Course That Trains You to Draw the Strongest Conclusion the Data Actually Supports — Taught, Tutored, Drilled, and Graded by AI**
+**A Four-Unit Course That Trains You to Draw the Strongest Conclusion the Data Actually Supports — Taught, Tutored, Drilled, and Graded by AI**
 
 ---
 
@@ -10,7 +10,7 @@ Constructive Critical Reasoning (CCR) is a self-paced, single-user web course th
 
 CCR inverts the usual grading instinct. Most "critical thinking" rewards caution: the more hedged the answer, the safer it feels. Here, hedging is the failure mode. The **richest, most-falsifiable, most-committed model earns top credit**; the cautious *"you can't really conclude anything"* dodge earns near-zero; florid padding that binds no data scores low; and a bold claim the data actively defeats also earns zero. Every question rewards committing harder to the most, while exposing the cleanest disconfirming test.
 
-The curriculum is organized into **one unit and 8 sections**: 1.1 The Fecund Lead; 1.2 Model Selection by Explanatory Yield; 1.3 Parsimony as a Live Constraint; 1.4 Abductive Commitment; 1.5 From Correlation to Mechanism; 1.6 The Anomaly Cluster; 1.7 The Cheap Decisive Test; and 1.8 Calibrated Boldness.
+The curriculum is organized into **four units and 32 sections**. **Unit 1 — Foundations of Constructive Reasoning:** 1.1 The Fecund Lead; 1.2 Model Selection by Explanatory Yield; 1.3 Parsimony as a Live Constraint; 1.4 Abductive Commitment; 1.5 From Correlation to Mechanism; 1.6 The Anomaly Cluster; 1.7 The Cheap Decisive Test; 1.8 Calibrated Boldness. **Unit 2 — Building and Stress-Testing the Model:** 2.1 The Generative Question; 2.2 Auxiliary Assumptions; 2.3 Load-Bearing vs. Decorative; 2.4 The Severe Test; 2.5 Surprise as a Metric; 2.6 Independent Lines of Support; 2.7 The Degenerating Model; 2.8 Productive vs. Hollow Complexity. **Unit 3 — Adjudicating Among Rivals:** 3.1 The Live Contrast Set; 3.2 Differential Diagnosis; 3.3 The Crucial Experiment; 3.4 Likelihood Reasoning; 3.5 Base Rates and Priors; 3.6 Screening Off; 3.7 The Underdetermination Trap; 3.8 Total Evidence. **Unit 4 — Commitment, Revision, and Decision:** 4.1 The Cost of Being Wrong; 4.2 Provisional Acceptance; 4.3 The Update That Hurts; 4.4 Diagnosing the Failure; 4.5 The Reasoner's Self-Audit; 4.6 Robustness Under Perturbation; 4.7 Knowing When to Stop; 4.8 The Constructive Synthesis.
 
 Designed for **middle schoolers, curious adults wanting brief but meaningful exposure, instructors evaluating AI-taught coursework, and researchers studying AI academic integrity**, CCR pairs a real curriculum with two layers of AI-authorship detection — surfacing not just *whether* the writing looks AI-generated, but whether the *act of producing it* did.
 
@@ -18,7 +18,7 @@ Designed for **middle schoolers, curious adults wanting brief but meaningful exp
 
 ## 🧠 What It Does
 
-- **One-Unit Structured Curriculum** — A complete plain-language reasoning syllabus across 8 sections. Each section ships with a lesson and one graded homework. There is no separate test, midterm, or final — homework is the graded model.
+- **Four-Unit Structured Curriculum** — A complete plain-language reasoning syllabus across 32 sections in four units (Foundations of Constructive Reasoning; Building and Stress-Testing the Model; Adjudicating Among Rivals; Commitment, Revision, and Decision). Each section ships with a lesson and one graded homework. There is no separate test, midterm, or final — homework is the graded model.
 - **Three-Depth Lessons** — Every lesson is available at **Short / Medium / Long** length, AI-rewritten while preserving the same examples and learning objectives.
 - **Section-Scoped AI Tutor** — Ask a question about the paragraph you're reading and the answer streams back token-by-token, grounded in that exact lecture section. Suggested starter questions are pre-generated per lecture.
 - **One Homework Per Section, Your Format** — Each section's homework is offered in three formats and you pick exactly one: **MCQ (long)**, **Hybrid (medium — multiple choice + short written)**, or **Written (short)**. You get a **single attempt** — it locks the moment you submit.
