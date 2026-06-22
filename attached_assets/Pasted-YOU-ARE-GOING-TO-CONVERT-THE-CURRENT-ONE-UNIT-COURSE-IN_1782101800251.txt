@@ -1,0 +1,38 @@
+YOU ARE GOING TO CONVERT THE CURRENT (ONE UNIT) COURSE INTO A FULL-LENGTH (FOUR UNIT) COURSE. (THE EXISTING COURSE WILL SIMPLY BECOME UNIT 1 OF THE FOUR UNIT COURSE.) HERE ARE THE TOPICS: 
+
+UNIT 1: THE ABDUCTIVE ENGINE
+The Fecund Lead: Identifying Which Datum Carries the Most Inferential Payload
+Model Selection by Explanatory Yield: Choosing the Model That Binds the Most Data
+Parsimony as a Live Constraint: Maximizing Richness Against Free Parameters
+Abductive Commitment: Inference to the Best Explanation and Betting Under Uncertainty
+From Correlation to Mechanism: Converting a Clue Into a Checkable Causal Model
+The Anomaly Cluster: Reading One Deviation as a Pointer to Hidden Structure
+The Cheap Decisive Test: Designing the Prediction That Confirms or Kills a Model Fastest
+Calibrated Boldness: Committing Maximally While Staying Falsifiable (Subordinated Error-Checking)
+UNIT 2: BUILDING AND STRESS-TESTING THE MODEL
+The Generative Question: Posing the Problem So an Explanation Can Even Form
+Auxiliary Assumptions: Seeing the Hidden Scaffolding a Model Smuggles In
+Load-Bearing vs. Decorative: Isolating the Claims a Model Cannot Survive Losing
+The Severe Test: Distinguishing Evidence That Could Have Refuted From Evidence That Couldn't
+Surprise as a Metric: Weighting a Confirmation by How Unlikely It Was Beforehand
+Independent Lines of Support: Why Convergence From Disjoint Sources Multiplies Credence
+The Degenerating Model: Catching a Theory That Survives Only by Bolting On Patches
+Productive vs. Hollow Complexity: Telling Earned Structure From Ad Hoc Rescue
+UNIT 3: ADJUDICATING AMONG RIVALS
+The Live Contrast Set: Framing Which Explanations Are Actually Competing
+Differential Diagnosis: Letting Rivals Carve the Evidence Into Discriminating Tests
+The Crucial Experiment: Engineering the Datum on Which Two Models Must Disagree
+Likelihood Reasoning: Asking Which Hypothesis Made the Data More Expected
+Base Rates and Priors: Weighting an Explanation by What Was Plausible Going In
+Screening Off: Recognizing When One Explanation Renders a Rival Inferentially Idle
+The Underdetermination Trap: Acting When the Evidence Genuinely Fails to Decide
+Total Evidence: Refusing to Cherry-Pick the Subset That Flatters Your Favorite
+UNIT 4: COMMITMENT, REVISION, AND DECISION
+The Cost of Being Wrong: Letting Stakes, Not Just Probability, Govern Commitment
+Provisional Acceptance: Holding a Model Firmly Enough to Act, Loosely Enough to Drop
+The Update That Hurts: Revising a Cherished Model Against Incoming Disconfirmation
+Diagnosing the Failure: Locating Which Assumption Broke When a Prediction Misses
+The Reasoner's Self-Audit: Detecting Motivated Inference in Your Own Model Choice
+Robustness Under Perturbation: Trusting Conclusions That Survive Changed Assumptions
+Knowing When to Stop: Closing Inquiry Without Premature Closure or Endless Doubt
+The Constructive Synthesis: Assembling Vetted Models Into a Standing Explanatory Frame
