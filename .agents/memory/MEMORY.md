@@ -1,6 +1,6 @@
 - [Course answer-key QC diagnostic](course-qc-diagnostic.md) — LLM key-legitimacy checks must judge against the course's own lecture text (not generic knowledge), or correct course-specific keys false-flag.
 - [Reasoning retake variants](reasoning-retake-variants.md) — retakes generate fresh same-kind items per attempt; score against attempt's own items; grade on model-judged correctness (stored keys are fallible hints) across headline+review+persisted is_correct in lockstep.
-- [API auth model](api-auth-model.md) — app now has NO auth at all (Clerk ripped out at user request, July 2026); every page/endpoint is open by design — don't reintroduce login unasked.
+- [API auth model](api-auth-model.md) — custom Google OAuth (user's own credentials, no auth lib); first sign-in claims ownership in seed_meta, all other accounts 403; redirect_uri from REPLIT_DOMAINS, never request headers.
 - [Tutor starter-question style](tutor-starter-questions.md) — lecture starter questions must ALWAYS be concrete-case application; never definition/abstract/comparison questions (user mandate).
 - [Course content reseed](course-content-reseed.md) — seeded data migrations must self-heal via a content marker + replace-in-transaction; "seed if empty" strands old content in existing/prod DBs (prod writes are read-only).
 - [DATABASE_URL override](database-url-override.md) — app DB resolves to platform `helium/heliumdb`, which overrides a user-set DATABASE_URL secret; checkDatabase() can report "not provisioned" while the app still has a working DB.

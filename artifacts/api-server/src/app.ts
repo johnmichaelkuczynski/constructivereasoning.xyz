@@ -8,6 +8,9 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// Behind the Replit shared proxy; trust X-Forwarded-* for origin resolution.
+app.set("trust proxy", true);
+
 app.use(
   pinoHttp({
     logger,

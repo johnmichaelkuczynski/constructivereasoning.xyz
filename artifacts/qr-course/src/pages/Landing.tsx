@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { signInUrl } from "@/lib/auth";
 import {
   BarChart3,
   BookOpen,
@@ -114,14 +114,14 @@ export default function Landing() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/dashboard">
+          <a href={signInUrl()}>
             <button
               className="px-4 py-2 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               data-testid="button-enter-course"
             >
-              Enter course
+              Sign in with Google
             </button>
-          </Link>
+          </a>
         </div>
       </header>
 
@@ -140,14 +140,14 @@ export default function Landing() {
             the evidence supports, instead of the safe "you can't really know" dodge.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Link href="/dashboard">
+            <a href={signInUrl()}>
               <button
                 className="px-6 py-3 rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 data-testid="button-cta-start"
               >
-                Start the course
+                Sign in with Google to start
               </button>
-            </Link>
+            </a>
           </div>
         </section>
 
