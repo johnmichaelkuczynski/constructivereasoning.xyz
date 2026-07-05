@@ -89,7 +89,10 @@ router.get("/auth/google", (req, res) => {
     res.status(500).json({ error: "GOOGLE_CLIENT_ID is not configured" });
     return;
   }
-  const state = crypto.randomBytes(16).toString("hex");
+  // Prefix marks whether this is already an automatic retry, so a stale
+  // callback can restart the flow once without risking a redirect loop.
+  const isRetry = req.query.retry === "1";
+  const state = `${isRetry ? "r1" : "r0"}${crypto.randomBytes(16).toString("hex")}`;
   setCookie(res, STATE_COOKIE, state, { maxAge: 600, secure: isSecure(req) });
 
   const params = new URLSearchParams({
@@ -120,7 +123,19 @@ router.get("/auth/google/callback", async (req, res) => {
     }
     const cookies = parseCookies(req.headers.cookie);
     if (!code || !state || state !== cookies[STATE_COOKIE]) {
-      res.status(400).send("Invalid OAuth state");
+      // Stale or refreshed callback (expired state cookie, attempt started
+      // before a redeploy, etc). Restart the flow at most once: only a
+      // well-formed first-attempt ("r0") state may trigger a retry.
+      if (typeof state === "string" && state.startsWith("r0")) {
+        req.log.warn("Stale OAuth callback — restarting sign-in flow");
+        res.redirect("/api/auth/google?retry=1");
+        return;
+      }
+      res
+        .status(400)
+        .send(
+          "Sign-in could not be completed — your browser may be blocking cookies. Enable cookies for this site and try again from the home page.",
+        );
       return;
     }
 
