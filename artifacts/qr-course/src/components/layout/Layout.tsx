@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, Scale, GraduationCap, ShieldCheck, Search, LogOut } from "lucide-react";
+import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, Scale, GraduationCap, ShieldCheck, Search } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAdminMode } from "@/lib/adminMode";
-import { useAuth, useSignOut } from "@/lib/auth";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -66,8 +65,6 @@ function TopBar() {
   const [location, setLocation] = useLocation();
   const active = location.startsWith("/diagnostics");
   const [adminMode, setAdminMode] = useAdminMode();
-  const { user } = useAuth();
-  const signOut = useSignOut();
   const qc = useQueryClient();
   const [resetting, setResetting] = useState(false);
   const [expanding, setExpanding] = useState(false);
@@ -187,23 +184,6 @@ function TopBar() {
         {adminMode ? "Admin: On" : "Admin: Off"}
       </button>
 
-      {user && (
-        <span
-          className="ml-2 text-sm text-muted-foreground hidden md:inline"
-          data-testid="text-user-email"
-        >
-          {user.email}
-        </span>
-      )}
-      <button
-        onClick={() => void signOut()}
-        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium border border-border hover:bg-secondary"
-        data-testid="button-sign-out"
-        title="Sign out"
-      >
-        <LogOut className="w-4 h-4" />
-        Sign out
-      </button>
     </div>
   );
 }

@@ -3,9 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import { useAuth } from "@/lib/auth";
 
-import Landing from "@/pages/Landing";
 import Dashboard from "@/pages/Dashboard";
 import Assignments from "@/pages/Assignments";
 import Analytics from "@/pages/Analytics";
@@ -24,71 +22,25 @@ const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const queryClient = new QueryClient();
 
-function AuthLoading() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-    </div>
-  );
-}
-
-function Protected({ component: Component }: { component: React.ComponentType<any> }) {
-  const { user, isLoading } = useAuth();
-  if (isLoading) return <AuthLoading />;
-  if (!user) return <Redirect to="/" />;
-  return <Component />;
-}
-
-function Home() {
-  const { user, isLoading } = useAuth();
-  if (isLoading) return <AuthLoading />;
-  if (user) return <Redirect to="/dashboard" />;
-  return <Landing />;
-}
-
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/dashboard">
-        <Protected component={Dashboard} />
+      <Route path="/">
+        <Redirect to="/dashboard" />
       </Route>
-      <Route path="/assignments">
-        <Protected component={Assignments} />
-      </Route>
-      <Route path="/assignments/:id/practice">
-        <Protected component={PracticeAssignment} />
-      </Route>
-      <Route path="/assignments/:id">
-        <Protected component={AssignmentRunner} />
-      </Route>
-      <Route path="/analytics">
-        <Protected component={Analytics} />
-      </Route>
-      <Route path="/reasoning">
-        <Protected component={Reasoning} />
-      </Route>
-      <Route path="/reasoning/:id">
-        <Protected component={ReasoningRunner} />
-      </Route>
-      <Route path="/grades">
-        <Protected component={Grades} />
-      </Route>
-      <Route path="/admin">
-        <Protected component={AdminMode} />
-      </Route>
-      <Route path="/diagnostics">
-        <Protected component={Diagnostics} />
-      </Route>
-      <Route path="/weeks/:weekNumber">
-        <Protected component={WeekView} />
-      </Route>
-      <Route path="/lectures/:lectureId">
-        <Protected component={LectureView} />
-      </Route>
-      <Route path="/practice/topic/:topicId">
-        <Protected component={TopicPractice} />
-      </Route>
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/assignments" component={Assignments} />
+      <Route path="/assignments/:id/practice" component={PracticeAssignment} />
+      <Route path="/assignments/:id" component={AssignmentRunner} />
+      <Route path="/analytics" component={Analytics} />
+      <Route path="/reasoning" component={Reasoning} />
+      <Route path="/reasoning/:id" component={ReasoningRunner} />
+      <Route path="/grades" component={Grades} />
+      <Route path="/admin" component={AdminMode} />
+      <Route path="/diagnostics" component={Diagnostics} />
+      <Route path="/weeks/:weekNumber" component={WeekView} />
+      <Route path="/lectures/:lectureId" component={LectureView} />
+      <Route path="/practice/topic/:topicId" component={TopicPractice} />
       <Route component={NotFound} />
     </Switch>
   );
