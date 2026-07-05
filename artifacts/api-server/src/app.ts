@@ -8,6 +8,12 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// Deployment health check: registered FIRST, before any middleware, so it can
+// never be affected by logging, CORS, body parsing, or route handlers.
+app.get("/api", (_req, res) => {
+  res.status(200).json({ ok: true });
+});
+
 // Behind the Replit shared proxy; trust X-Forwarded-* for origin resolution.
 app.set("trust proxy", true);
 
