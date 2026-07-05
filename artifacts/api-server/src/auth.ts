@@ -122,7 +122,7 @@ export function setupAuth(app: Express) {
         const prodDomain = (process.env.REPLIT_DOMAINS || "")
           .split(",")[0]
           ?.trim();
-        return `https://${prodDomain || "constructive-reasoning-101.replit.app"}${CALLBACK_PATH}`;
+        return `https://${prodDomain || "constructivereasoning.xyz"}${CALLBACK_PATH}`;
       }
       if (process.env.REPLIT_DEV_DOMAIN) {
         return `https://${process.env.REPLIT_DEV_DOMAIN}${CALLBACK_PATH}`;
@@ -139,8 +139,9 @@ export function setupAuth(app: Express) {
       [
         ...(process.env.REPLIT_DOMAINS || "").split(",").map((d) => d.trim()),
         process.env.REPLIT_DEV_DOMAIN || "",
+        "constructivereasoning.xyz",
+        "www.constructivereasoning.xyz",
         "constructive-reasoning-101.replit.app",
-        "www.constructive-reasoning-101.replit.app",
         "localhost:8080",
       ]
         .filter(Boolean)
