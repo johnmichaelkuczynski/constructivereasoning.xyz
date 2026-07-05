@@ -1,14 +1,15 @@
 ---
-name: API auth model (single-user)
-description: How the Ethics 101 API treats authentication/authorization — important before adding "protected" or "admin" endpoints.
+name: API auth model (single-user, no auth)
+description: How the course API treats authentication/authorization — important before adding "protected" or "admin" endpoints.
 ---
 
-# API is single-user with no per-route server authz
+# App has NO authentication at all (login ripped out July 2026)
 
-The api-server mounts `clerkMiddleware` (attaches auth context) but **routes do not gate on it** — no `userId` check, and submit/grade endpoints don't identify a user. The whole API is effectively callable without a session; Clerk gating lives only on the frontend (wouter `protectedComponent`).
+The app previously used Clerk with frontend-only gating; at the user's explicit request the entire login system was removed. There is now **no auth anywhere**: no ClerkProvider, no sign-in/sign-up routes, no protected-route HOC, no auth middleware on the API. `/` renders the public landing; every page (dashboard, admin, diagnostics) is directly reachable.
 
-**Why:** Ethics 101 is a single-user, self-paced course. The account owner is simultaneously the student and the "administrator." There is no second party to protect against, so detection/grading are self-imposed tooling, not a trust boundary.
+**Why:** single-user, self-paced course — the owner is both student and administrator. The user said "rip out all existing login, I have a plan," so do not reintroduce auth without being asked.
 
 **How to apply:**
-- "Admin mode" is intentionally a client-side `localStorage` flag (`lib/adminMode.ts`); `skipDetection` on submit and `/api/admin/grader-lab` are not server-authz'd by design — consistent with every other endpoint.
-- Do NOT assume any endpoint is protected server-side. If a future task genuinely needs a trust boundary (multi-user, cost abuse), that requires adding per-route Clerk authz across the whole API — a deliberate, in-scope architectural change, not a one-endpoint patch.
+- Do NOT assume any endpoint or page is protected. "Admin mode" is a client-side `localStorage` flag (`lib/adminMode.ts`); `skipDetection` and grader-lab endpoints have no server authz — by design.
+- If a future task genuinely needs a trust boundary (multi-user, cost abuse), that is a deliberate architectural change across the whole API, not a one-endpoint patch.
+- Clerk teardown touched: qr-course App.tsx/Landing.tsx/Layout.tsx/index.css, api-server app.ts (+ deleted clerk proxy middleware), and removed @clerk/* plus http-proxy-middleware/cookie-parser deps.
