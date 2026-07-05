@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, Scale, GraduationCap, ShieldCheck, Search } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, Scale, GraduationCap, ShieldCheck, Search, LogIn, LogOut } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAdminMode } from "@/lib/adminMode";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -57,6 +57,76 @@ export function Sidebar() {
       <div className="p-4 border-t border-border text-xs text-muted-foreground text-center">
         Constructive Critical Reasoning
       </div>
+    </div>
+  );
+}
+
+type AuthUserResponse = {
+  authenticated: boolean;
+  user: {
+    id: number;
+    username: string;
+    email: string | null;
+    displayName: string | null;
+  } | null;
+};
+
+function AuthControls() {
+  const qc = useQueryClient();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const { data } = useQuery<AuthUserResponse>({
+    queryKey: ["auth-user"],
+    queryFn: async () => {
+      const res = await fetch(`${basePath}/api/auth/user`, { credentials: "include" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
+    staleTime: 60_000,
+  });
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    try {
+      await fetch(`${basePath}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      await qc.invalidateQueries({ queryKey: ["auth-user"] });
+    } finally {
+      setLoggingOut(false);
+    }
+  }
+
+  if (data?.authenticated && data.user) {
+    return (
+      <div className="flex items-center gap-2 mr-auto">
+        <span className="text-sm text-muted-foreground" data-testid="text-user-name">
+          {data.user.displayName || data.user.email || data.user.username}
+        </span>
+        <button
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium border border-border hover:bg-secondary disabled:opacity-50"
+          data-testid="button-logout"
+        >
+          <LogOut className="w-4 h-4" />
+          {loggingOut ? "Signing out…" : "Sign out"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center mr-auto">
+      <a href={`${basePath}/api/auth/google`}>
+        <button
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:opacity-90"
+          data-testid="button-login"
+        >
+          <LogIn className="w-4 h-4" />
+          Sign in with Google
+        </button>
+      </a>
     </div>
   );
 }
@@ -136,6 +206,7 @@ function TopBar() {
 
   return (
     <div className="sticky top-0 z-10 flex items-center justify-end gap-2 px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
+      <AuthControls />
       <button
         onClick={handleExpandLectures}
         disabled={expanding}
