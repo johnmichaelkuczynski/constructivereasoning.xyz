@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { LayoutDashboard, PenTool, BarChart3, Activity, RotateCcw, Sparkles, Scale, GraduationCap, ShieldCheck, Search, LogIn, LogOut } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAdminMode } from "@/lib/adminMode";
+import { useAuthUser } from "@/lib/auth";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -61,28 +62,10 @@ export function Sidebar() {
   );
 }
 
-type AuthUserResponse = {
-  authenticated: boolean;
-  user: {
-    id: number;
-    username: string;
-    email: string | null;
-    displayName: string | null;
-  } | null;
-};
-
 function AuthControls() {
   const qc = useQueryClient();
   const [loggingOut, setLoggingOut] = useState(false);
-  const { data } = useQuery<AuthUserResponse>({
-    queryKey: ["auth-user"],
-    queryFn: async () => {
-      const res = await fetch(`${basePath}/api/auth/user`, { credentials: "include" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    },
-    staleTime: 60_000,
-  });
+  const { data } = useAuthUser();
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -134,7 +117,7 @@ function AuthControls() {
 function TopBar() {
   const [location, setLocation] = useLocation();
   const active = location.startsWith("/diagnostics");
-  const [adminMode, setAdminMode] = useAdminMode();
+  const [adminMode] = useAdminMode();
   const qc = useQueryClient();
   const [resetting, setResetting] = useState(false);
   const [expanding, setExpanding] = useState(false);
@@ -241,20 +224,16 @@ function TopBar() {
         </button>
       </Link>
 
-      <button
-        onClick={() => setAdminMode(!adminMode)}
-        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-          adminMode
-            ? "bg-chart-4 text-white"
-            : "border border-border hover:bg-secondary"
-        }`}
-        data-testid="button-admin-toggle"
-        title="Administrator mode disables AI detection, enables pasting, and unlocks the Grader Lab"
-      >
-        <ShieldCheck className="w-4 h-4" />
-        {adminMode ? "Admin: On" : "Admin: Off"}
-      </button>
-
+      {adminMode && (
+        <span
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium bg-chart-4 text-white"
+          data-testid="badge-admin"
+          title="Signed in as the administrator — AI detection off, pasting enabled, admin page unlocked"
+        >
+          <ShieldCheck className="w-4 h-4" />
+          Administrator
+        </span>
+      )}
     </div>
   );
 }

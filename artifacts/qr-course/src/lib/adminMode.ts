@@ -1,35 +1,14 @@
-import { useEffect, useState } from "react";
+import { isAdminNow, useAuthUser, userIsAdmin } from "./auth";
 
-const KEY = "ethics-admin-mode";
-const EVENT = "admin-mode-change";
+// Admin mode is no longer a toggle — it is on if and only if the signed-in
+// Google account is the administrator's. The server enforces the same rule
+// independently on admin endpoints.
 
 export function isAdminMode(): boolean {
-  try {
-    return localStorage.getItem(KEY) === "1";
-  } catch {
-    return false;
-  }
+  return isAdminNow();
 }
 
-export function setAdminMode(on: boolean): void {
-  try {
-    localStorage.setItem(KEY, on ? "1" : "0");
-  } catch {
-    /* ignore */
-  }
-  window.dispatchEvent(new Event(EVENT));
-}
-
-export function useAdminMode(): [boolean, (on: boolean) => void] {
-  const [on, setOn] = useState<boolean>(isAdminMode);
-  useEffect(() => {
-    const handler = () => setOn(isAdminMode());
-    window.addEventListener(EVENT, handler);
-    window.addEventListener("storage", handler);
-    return () => {
-      window.removeEventListener(EVENT, handler);
-      window.removeEventListener("storage", handler);
-    };
-  }, []);
-  return [on, setAdminMode];
+export function useAdminMode(): [boolean] {
+  const { data } = useAuthUser();
+  return [userIsAdmin(data)];
 }

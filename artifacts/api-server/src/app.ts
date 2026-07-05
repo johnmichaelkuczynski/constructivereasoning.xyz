@@ -4,7 +4,7 @@ import pinoHttp from "pino-http";
 import path from "node:path";
 import fs from "node:fs";
 import router from "./routes";
-import { setupAuth } from "./auth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -44,7 +44,10 @@ app.use(express.urlencoded({ extended: true }));
 
 setupAuth(app);
 
-app.use("/api", router);
+// Every API route below requires a signed-in user. The auth routes
+// (/api/auth/*) are registered inside setupAuth above, so they stay public;
+// the bare /api health check is registered first and also stays public.
+app.use("/api", isAuthenticated, router);
 
 // In production, serve the built qr-course frontend from the same process.
 // On Replit the deploy sidecar handles this; on Render (single web service)

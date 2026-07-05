@@ -17,6 +17,7 @@ import Reasoning from "@/pages/Reasoning";
 import ReasoningRunner from "@/pages/ReasoningRunner";
 import Grades from "@/pages/Grades";
 import AdminMode from "@/pages/AdminMode";
+import { AuthGate } from "@/lib/auth";
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -51,7 +52,9 @@ function App() {
     <WouterRouter base={basePath}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Router />
+          <AuthGate>
+            <Router />
+          </AuthGate>
           <Toaster />
         </TooltipProvider>
       </QueryClientProvider>

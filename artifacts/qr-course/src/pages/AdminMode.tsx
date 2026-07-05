@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Layout } from "@/components/layout/Layout";
 import {
   useListAssignments,
@@ -10,6 +11,97 @@ import { Button } from "@/components/ui/button";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { useAdminMode } from "@/lib/adminMode";
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+type VisitsResponse = {
+  stats: {
+    allTime: number;
+    last24Hours: number;
+    lastMonth: number;
+    lastYear: number;
+  };
+  visits: Array<{ id: number; email: string | null; visitedAt: string }>;
+};
+
+function SignInData() {
+  const { data, isLoading, isError } = useQuery<VisitsResponse>({
+    queryKey: ["admin-visits"],
+    queryFn: async () => {
+      const res = await fetch(`${basePath}/api/admin/visits`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    },
+  });
+
+  if (isLoading) {
+    return <div className="text-muted-foreground text-sm">Loading sign-in data…</div>;
+  }
+  if (isError || !data) {
+    return (
+      <div className="rounded-md border border-destructive/50 bg-destructive/5 p-4 text-sm text-destructive">
+        Could not load sign-in data.
+      </div>
+    );
+  }
+
+  const cards = [
+    { label: "Last 24 hours", value: data.stats.last24Hours },
+    { label: "Last 30 days", value: data.stats.lastMonth },
+    { label: "Last year", value: data.stats.lastYear },
+    { label: "All time", value: data.stats.allTime },
+  ];
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {cards.map((c) => (
+          <div
+            key={c.label}
+            className="rounded-lg border border-border bg-card p-4"
+            data-testid={`stat-${c.label.replace(/\s+/g, "-").toLowerCase()}`}
+          >
+            <div className="text-xs uppercase tracking-wide text-muted-foreground">
+              {c.label}
+            </div>
+            <div className="text-2xl font-bold mt-1">{c.value}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-secondary/50 text-left">
+            <tr>
+              <th className="px-4 py-2 font-medium">Email</th>
+              <th className="px-4 py-2 font-medium">Signed in at</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.visits.length === 0 ? (
+              <tr>
+                <td colSpan={2} className="px-4 py-4 text-muted-foreground">
+                  No sign-ins recorded yet.
+                </td>
+              </tr>
+            ) : (
+              data.visits.map((v) => (
+                <tr key={v.id} className="border-t border-border">
+                  <td className="px-4 py-2">{v.email ?? "(unknown)"}</td>
+                  <td className="px-4 py-2 text-muted-foreground">
+                    {new Date(v.visitedAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 type Source = "problem" | "custom";
 
 // A graded case "matches" when the live grader's credit lands within a small
@@ -20,7 +112,7 @@ function caseMatches(c: { credit: number; expectedCredit: number }): boolean {
 }
 
 export default function AdminMode() {
-  const [adminMode, setAdminMode] = useAdminMode();
+  const [adminMode] = useAdminMode();
 
   const [source, setSource] = useState<Source>("problem");
   const [assignmentId, setAssignmentId] = useState<number | null>(null);
@@ -64,14 +156,8 @@ export default function AdminMode() {
             Administrator
           </h1>
           <p className="text-muted-foreground">
-            Administrator mode is off. Turn it on to disable AI detection on your
-            submissions, enable pasting in answer boxes, and use the Grader Lab.
+            This page is restricted to the administrator account.
           </p>
-          <div>
-            <Button onClick={() => setAdminMode(true)} data-testid="button-enable-admin">
-              Enable administrator mode
-            </Button>
-          </div>
         </div>
       </Layout>
     );
@@ -80,22 +166,29 @@ export default function AdminMode() {
   return (
     <Layout>
       <div className="p-8 max-w-5xl mx-auto w-full flex flex-col gap-6">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-serif font-bold text-primary">
-              Grader Lab
-            </h1>
-            <p className="text-muted-foreground mt-1 max-w-2xl">
-              Generate a spread of candidate answers for a question — correct ones
-              written as fragments or ALL CAPS, wrong ones written as polished
-              sentences, and more — then see exactly how the grader scores each.
-              No AI detection runs here.
-            </p>
-          </div>
-          <Button variant="outline" onClick={() => setAdminMode(false)}>
-            Turn off admin mode
-          </Button>
+        <div>
+          <h1 className="text-3xl font-serif font-bold text-primary">
+            Administrator
+          </h1>
+          <p className="text-muted-foreground mt-1 max-w-2xl">
+            Sign-in activity for this site, plus the Grader Lab.
+          </p>
         </div>
+
+        <section className="flex flex-col gap-3">
+          <h2 className="text-xl font-serif font-semibold">Sign-in data</h2>
+          <SignInData />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <h2 className="text-xl font-serif font-semibold">Grader Lab</h2>
+          <p className="text-muted-foreground max-w-2xl text-sm">
+            Generate a spread of candidate answers for a question — correct ones
+            written as fragments or ALL CAPS, wrong ones written as polished
+            sentences, and more — then see exactly how the grader scores each.
+            No AI detection runs here.
+          </p>
+        </section>
 
         <div className="rounded-lg border border-border bg-card p-5 flex flex-col gap-4">
           <div className="flex gap-2">
