@@ -84,6 +84,12 @@ function SignInScreen() {
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const { data, isLoading, isError } = useAuthUser();
 
+  // In dev (Replit preview), skip the login wall so you can work freely.
+  // The deployed build (import.meta.env.PROD) always enforces sign-in.
+  if (import.meta.env.DEV) {
+    return <>{children}</>;
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-muted-foreground">

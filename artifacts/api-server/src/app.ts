@@ -47,7 +47,10 @@ setupAuth(app);
 // Every API route below requires a signed-in user. The auth routes
 // (/api/auth/*) are registered inside setupAuth above, so they stay public;
 // the bare /api health check is registered first and also stays public.
-app.use("/api", isAuthenticated, router);
+// In development, skip the auth check so the Replit preview works without login.
+const apiAuthMiddleware =
+  process.env.NODE_ENV === "production" ? isAuthenticated : (_req: any, _res: any, next: any) => next();
+app.use("/api", apiAuthMiddleware, router);
 
 // In production, serve the built qr-course frontend from the same process.
 // On Replit the deploy sidecar handles this; on Render (single web service)
