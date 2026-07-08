@@ -32,10 +32,26 @@ export function userIsAdmin(data: AuthUserResponse | undefined): boolean {
   );
 }
 
+const DEV_USER: AuthUserResponse = {
+  authenticated: true,
+  user: {
+    id: 0,
+    username: "dev",
+    email: ADMIN_EMAIL,
+    displayName: "Dev (Admin)",
+  },
+};
+
 export function useAuthUser() {
   return useQuery<AuthUserResponse>({
     queryKey: ["auth-user"],
     queryFn: async () => {
+      // In dev, return a fake admin user so the app is fully functional
+      // without going through Google OAuth.
+      if (import.meta.env.DEV) {
+        cachedIsAdmin = true;
+        return DEV_USER;
+      }
       const res = await fetch(`${basePath}/api/auth/user`, {
         credentials: "include",
       });

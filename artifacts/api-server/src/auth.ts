@@ -373,6 +373,10 @@ export function setupAuth(app: Express) {
 const ADMIN_EMAIL = "johnmichaelkuczynski@gmail.com";
 
 export const isAdmin: RequestHandler = (req, res, next) => {
+  // In dev, skip the admin check so the Administrative page works without login.
+  if (process.env.NODE_ENV !== "production") {
+    return next();
+  }
   if (req.isAuthenticated() && req.user?.email?.toLowerCase() === ADMIN_EMAIL) {
     return next();
   }
